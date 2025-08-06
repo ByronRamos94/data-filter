@@ -77,6 +77,14 @@
     .dataTables_filter {
       display: none;
     }
+    /* 🔹 Reduce DESCRIPCION font size in small screens to keep it visible */
+    @media (max-width: 600px) {
+      table.dataTable td:nth-child(2),
+      table.dataTable th:nth-child(2) {
+        font-size: 0.75rem;
+        white-space: nowrap;
+      }
+    }
   </style>
 </head>
 <body>
@@ -136,14 +144,10 @@
         // Add CSV columns with responsive priorities
         Object.keys(data[0]).forEach(k => {
           let col = { title: k, data: k };
-          // Always visible columns on small devices
-          if (k === "DESCRIPCION") {
-            col.responsivePriority = 1;
-            col.responsive = false; // 🔹 Never hide DESCRIPCION
-          }
+          if (k === "DESCRIPCION") col.responsivePriority = 1;
           else if (k === "TIPO REPUESTO") col.responsivePriority = 2;
           else if (k === "MARCA AUTO") col.responsivePriority = 3;
-          else col.responsivePriority = 1000; // low priority, hide first in small screens
+          else col.responsivePriority = 1000;
           columnas.push(col);
         });
 
@@ -156,8 +160,7 @@
               target: 0
             }
           },
-          scrollX: true, // 🔹 allow horizontal scroll for long descriptions
-          order: [[1, 'asc']], // Order by DESCRIPCION initially
+          order: [[1, 'asc']],
           pageLength: 10,
           language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json"
