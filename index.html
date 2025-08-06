@@ -15,12 +15,13 @@
       font-family: 'Segoe UI', Arial, sans-serif;
       padding: 20px;
       background: #f8f9fa;
+      color: #000;
     }
     h1 {
       text-align: center;
       margin-bottom: 20px;
       font-size: 1.8rem;
-      color: #333;
+      color: #000;
     }
     .filtros {
       margin-bottom: 20px;
@@ -32,12 +33,48 @@
     select {
       padding: 8px;
       border-radius: 5px;
-      border: 1px solid #ccc;
+      border: 2px solid #f76f3e;
       min-width: 180px;
+      background: #fff;
+      color: #000;
     }
+    select:focus {
+      outline: none;
+      border-color: #000;
+      box-shadow: 0 0 5px rgba(247, 111, 62, 0.8);
+    }
+    /* Encabezado de la tabla */
     table.dataTable thead th {
-      background-color: #343a40;
+      background-color: #f76f3e;
       color: white;
+    }
+    /* Hover en filas */
+    table.dataTable tbody tr:hover {
+      background-color: rgba(247, 111, 62, 0.1);
+    }
+    /* Controles de DataTables */
+    .dataTables_wrapper .dataTables_filter input {
+      border: 2px solid #f76f3e;
+      border-radius: 5px;
+      padding: 4px;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      background: #000 !important;
+      color: white !important;
+      border-radius: 5px;
+      padding: 4px 8px;
+      margin: 0 2px;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+      background: #f76f3e !important;
+      color: white !important;
+    }
+    /* Forzar que al menos 3 columnas sean visibles y permitir scroll */
+    table.dataTable.nowrap {
+      min-width: 500px; /* puedes ajustar a 450px si quieres */
+    }
+    .table-responsive {
+      overflow-x: auto;
     }
   </style>
 </head>
@@ -67,7 +104,7 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
-    let tabla; // para acceder desde el filtro
+    let tabla;
 
     Papa.parse("datos.csv", {
       download: true,
@@ -118,7 +155,7 @@
           return marcaCoincide && tipoCoincide;
         });
 
-        // Aplicar filtros al cambiar selects
+        // Aplicar filtros
         $("#marcaAuto, #tipoRepuesto").on("change", function() {
           tabla.draw();
         });
