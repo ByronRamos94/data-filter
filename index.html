@@ -67,6 +67,8 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
+    let tabla; // para acceder desde el filtro
+
     Papa.parse("datos.csv", {
       download: true,
       header: true,
@@ -91,7 +93,7 @@
         });
 
         // Inicializar DataTable
-        const tabla = $("#tabla").DataTable({
+        tabla = $("#tabla").DataTable({
           data: data,
           columns: columnas,
           responsive: true,
@@ -101,15 +103,18 @@
           }
         });
 
-        // Filtro personalizado con limpieza de espacios y minúsculas
-        $.fn.dataTable.ext.search.push(function(settings, rowData) {
+        // Filtro personalizado usando los datos originales
+        $.fn.dataTable.ext.search.push(function(settings, rowData, dataIndex) {
           const marcaSel = $("#marcaAuto").val()?.trim().toLowerCase();
           const tipoSel = $("#tipoRepuesto").val()?.trim().toLowerCase();
-          const marcaAuto = (rowData["MARCA AUTO"] || "").trim().toLowerCase();
-          const tipoRepuesto = (rowData["TIPO REPUESTO"] || "").trim().toLowerCase();
+
+          const row = tabla.row(dataIndex).data();
+          const marcaAuto = (row["MARCA AUTO"] || "").trim().toLowerCase();
+          const tipoRepuesto = (row["TIPO REPUESTO"] || "").trim().toLowerCase();
 
           const marcaCoincide = !marcaSel || marcaAuto === marcaSel;
           const tipoCoincide = !tipoSel || tipoRepuesto === tipoSel;
+
           return marcaCoincide && tipoCoincide;
         });
 
