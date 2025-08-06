@@ -52,6 +52,12 @@
     table.dataTable tbody tr:hover {
       background-color: rgba(247, 111, 62, 0.1);
     }
+    /* Search box style */
+    .dataTables_wrapper .dataTables_filter input {
+      border: 2px solid #f76f3e;
+      border-radius: 5px;
+      padding: 4px;
+    }
     /* Pagination buttons style */
     .dataTables_wrapper .dataTables_paginate .paginate_button {
       background: #000 !important;
@@ -126,13 +132,12 @@
           return col;
         });
 
-        // Initialize DataTable without global search
+        // Initialize DataTable
         tabla = $("#tabla").DataTable({
           data: data,
           columns: columnas,
           responsive: true,
           pageLength: 10,
-          searching: false, // Disable search bar
           language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json"
           }
