@@ -70,7 +70,7 @@
       background: #f76f3e !important;
       color: white !important;
     }
-    /* Ensure at least 3 columns are visible on small screens */
+    /* Ensure key columns are visible on small screens */
     table.dataTable.nowrap {
       min-width: 500px;
     }
@@ -127,8 +127,8 @@
         const columnas = Object.keys(data[0]).map(k => {
           let col = { title: k, data: k };
           if (k === "DESCRIPCION") col.responsivePriority = 1; // Always show in responsive
-          if (k === "CODIGO") col.responsivePriority = 2;
-          if (k === "CANTIDAD") col.responsivePriority = 3;
+          if (k === "TIPO REPUESTO") col.responsivePriority = 2;
+          if (k === "MARCA AUTO") col.responsivePriority = 3;
           return col;
         });
 
