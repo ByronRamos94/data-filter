@@ -73,6 +73,10 @@
       cursor: pointer;
       user-select: none;
     }
+    /* Hide default search bar but keep functionality */
+    .dataTables_filter {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -151,7 +155,6 @@
           },
           order: [[1, 'asc']], // Order by DESCRIPCION initially
           pageLength: 10,
-          searching: false, // Disable global search bar
           language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json"
           }
