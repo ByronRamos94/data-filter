@@ -134,22 +134,19 @@
         ];
 
         // Add CSV columns with responsive priorities
-        Object.keys(data[0]).forEach((k, i) => {
+        Object.keys(data[0]).forEach(k => {
           let col = { title: k, data: k };
+          // Always visible columns on small devices
           if (k === "DESCRIPCION") {
             col.responsivePriority = 1;
             col.responsive = false; // 🔹 Never hide DESCRIPCION
-          } else if (k === "TIPO REPUESTO") {
-            col.responsivePriority = 2;
-          } else if (k === "MARCA AUTO") {
-            col.responsivePriority = 3;
-          } else {
-            col.responsivePriority = 1000; // low priority
           }
+          else if (k === "TIPO REPUESTO") col.responsivePriority = 2;
+          else if (k === "MARCA AUTO") col.responsivePriority = 3;
+          else col.responsivePriority = 1000; // low priority, hide first in small screens
           columnas.push(col);
         });
 
-        // Initialize DataTable
         tabla = $('#tabla').DataTable({
           data: data,
           columns: columnas,
@@ -159,8 +156,8 @@
               target: 0
             }
           },
-          scrollX: true, // 🔹 Enable horizontal scroll
-          order: [[1, 'asc']],
+          scrollX: true, // 🔹 allow horizontal scroll for long descriptions
+          order: [[1, 'asc']], // Order by DESCRIPCION initially
           pageLength: 10,
           language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json"
@@ -185,13 +182,6 @@
         // Apply filters on dropdown change
         $("#marcaAuto, #tipoRepuesto").on("change", function() {
           tabla.draw();
-        });
-
-        // 🔹 Force redraw when reaching bottom of the page
-        $(window).on('scroll', function() {
-          if ($(window).scrollTop() + $(window).height() >= $(document).height() - 10) {
-            tabla.draw(false);
-          }
         });
       }
     });
