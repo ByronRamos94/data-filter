@@ -43,21 +43,22 @@
       border-color: #000;
       box-shadow: 0 0 5px rgba(247, 111, 62, 0.8);
     }
-    /* Encabezado de la tabla */
+    /* Table header color */
     table.dataTable thead th {
       background-color: #f76f3e;
       color: white;
     }
-    /* Hover en filas */
+    /* Row hover effect */
     table.dataTable tbody tr:hover {
       background-color: rgba(247, 111, 62, 0.1);
     }
-    /* Controles de DataTables */
+    /* Search box style */
     .dataTables_wrapper .dataTables_filter input {
       border: 2px solid #f76f3e;
       border-radius: 5px;
       padding: 4px;
     }
+    /* Pagination buttons style */
     .dataTables_wrapper .dataTables_paginate .paginate_button {
       background: #000 !important;
       color: white !important;
@@ -69,9 +70,9 @@
       background: #f76f3e !important;
       color: white !important;
     }
-    /* Forzar que al menos 3 columnas sean visibles y permitir scroll */
+    /* Ensure at least 3 columns are visible on small screens */
     table.dataTable.nowrap {
-      min-width: 500px; /* puedes ajustar a 450px si quieres */
+      min-width: 500px;
     }
     .table-responsive {
       overflow-x: auto;
@@ -81,6 +82,7 @@
 <body>
   <h1>Catálogo de Repuestos</h1>
 
+  <!-- Filter dropdowns -->
   <div class="filtros">
     <select id="marcaAuto" class="form-select">
       <option value="">Todas las marcas de auto</option>
@@ -90,6 +92,7 @@
     </select>
   </div>
 
+  <!-- Table container -->
   <div class="table-responsive">
     <table id="tabla" class="table table-striped table-bordered nowrap" style="width:100%"></table>
   </div>
@@ -113,23 +116,23 @@
       complete: function(results) {
         const data = results.data;
 
-        // Poblar filtros
+        // Populate filter dropdowns
         const marcasAuto = [...new Set(data.map(d => d["MARCA AUTO"]).filter(Boolean))].sort();
         const tiposRepuesto = [...new Set(data.map(d => d["TIPO REPUESTO"]).filter(Boolean))].sort();
 
         marcasAuto.forEach(m => $("#marcaAuto").append(`<option value="${m}">${m}</option>`));
         tiposRepuesto.forEach(t => $("#tipoRepuesto").append(`<option value="${t}">${t}</option>`));
 
-        // Crear columnas con prioridad responsive
+        // Create column definitions with responsive priorities
         const columnas = Object.keys(data[0]).map(k => {
           let col = { title: k, data: k };
-          if (k === "CODIGO") col.responsivePriority = 1;
-          if (k === "APLICACIÓN") col.responsivePriority = 2;
+          if (k === "DESCRIPCION") col.responsivePriority = 1; // Always show in responsive
+          if (k === "CODIGO") col.responsivePriority = 2;
           if (k === "CANTIDAD") col.responsivePriority = 3;
           return col;
         });
 
-        // Inicializar DataTable
+        // Initialize DataTable
         tabla = $("#tabla").DataTable({
           data: data,
           columns: columnas,
@@ -140,7 +143,7 @@
           }
         });
 
-        // Filtro personalizado usando los datos originales
+        // Custom filter using original row data
         $.fn.dataTable.ext.search.push(function(settings, rowData, dataIndex) {
           const marcaSel = $("#marcaAuto").val()?.trim().toLowerCase();
           const tipoSel = $("#tipoRepuesto").val()?.trim().toLowerCase();
@@ -155,7 +158,7 @@
           return marcaCoincide && tipoCoincide;
         });
 
-        // Aplicar filtros
+        // Apply filters on dropdown change
         $("#marcaAuto, #tipoRepuesto").on("change", function() {
           tabla.draw();
         });
