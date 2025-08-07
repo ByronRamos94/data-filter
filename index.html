@@ -73,7 +73,6 @@
     }
 
     @media (max-width: 600px) {
-      /* Solo reducimos el tamaño de fuente, el resto queda controlado por el render */
       table.dataTable td:nth-child(2),
       table.dataTable th:nth-child(2) {
         font-size: 0.75rem;
@@ -115,6 +114,7 @@
       complete: function(results) {
         const data = results.data;
 
+        // Llenar filtros
         const marcasAuto = [...new Set(data.map(d => d["MARCA AUTO"]).filter(Boolean))].sort();
         const tiposRepuesto = [...new Set(data.map(d => d["TIPO REPUESTO"]).filter(Boolean))].sort();
 
@@ -134,7 +134,6 @@
           let col = { title: k, data: k };
           if (k === "DESCRIPCION") {
             col.responsivePriority = 1;
-            // Render para truncar con ellipsis y tooltip
             col.render = function(data) {
               if (!data) return "";
               return `<span title="${data.replace(/"/g, '&quot;')}" style="
@@ -150,6 +149,9 @@
             col.responsivePriority = 2;
           } else if (k === "MARCA AUTO") {
             col.responsivePriority = 3;
+          } else if (k === "CANTIDAD") {
+            col.title = "EXISTENCIA";  // renombrar solo título
+            col.responsivePriority = 4;
           } else {
             col.responsivePriority = 1000;
           }
@@ -172,6 +174,30 @@
           }
         });
 
+        // Expandible con descripción completa
+        $('#tabla tbody').on('click', 'td.control', function () {
+          const tr = $(this).closest('tr');
+          const row = tabla.row(tr);
+
+          if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+          } else {
+            const data = row.data();
+            const detalleHtml = `
+              <table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
+                <tr>
+                  <td><strong>Descripción completa:</strong></td>
+                  <td>${data["DESCRIPCION"] || ''}</td>
+                </tr>
+              </table>
+            `;
+            row.child(detalleHtml).show();
+            tr.addClass('shown');
+          }
+        });
+
+        // Filtros personalizados
         $.fn.dataTable.ext.search.push(function(settings, rowData, dataIndex) {
           const marcaSel = $("#marcaAuto").val()?.trim().toLowerCase();
           const tipoSel = $("#tipoRepuesto").val()?.trim().toLowerCase();
