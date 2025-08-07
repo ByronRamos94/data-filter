@@ -73,14 +73,14 @@
       cursor: pointer;
       user-select: none;
     }
-    /* Hide default search bar but keep functionality */
+    /* Hide default search bar */
     .dataTables_filter {
       display: none;
     }
-    /* 🔹 Reduce DESCRIPCION font size in small screens to keep it visible */
+    /* Smaller DESCRIPCION font on mobile */
     @media (max-width: 600px) {
-      table.dataTable td:nth-child(2),
-      table.dataTable th:nth-child(2) {
+      table.dataTable td.descripcion-col,
+      table.dataTable th.descripcion-col {
         font-size: 0.75rem;
         white-space: nowrap;
       }
@@ -131,26 +131,34 @@
         marcasAuto.forEach(m => $("#marcaAuto").append(`<option value="${m}">${m}</option>`));
         tiposRepuesto.forEach(t => $("#tipoRepuesto").append(`<option value="${t}">${t}</option>`));
 
-        // Define columns including control column for responsive details
+        // Columnas
         const columnas = [
           {
             className: 'control',
             orderable: false,
             data: null,
-            defaultContent: '',
+            defaultContent: ''
+          },
+          {
+            title: "DESCRIPCION",
+            data: "DESCRIPCION",
+            className: "descripcion-col",
+            responsivePriority: 0 // prioridad más alta, no debería moverse
           }
         ];
 
-        // Add CSV columns with responsive priorities
+        // Agregar las demás columnas EXCEPTO DESCRIPCION
         Object.keys(data[0]).forEach(k => {
-          let col = { title: k, data: k };
-          if (k === "DESCRIPCION") col.responsivePriority = 1;
-          else if (k === "TIPO REPUESTO") col.responsivePriority = 2;
-          else if (k === "MARCA AUTO") col.responsivePriority = 3;
-          else col.responsivePriority = 1000;
-          columnas.push(col);
+          if (k === "DESCRIPCION") return; // ya la agregamos fija
+          columnas.push({
+            title: k,
+            data: k,
+            responsivePriority: (k === "TIPO REPUESTO") ? 1 :
+                                 (k === "MARCA AUTO") ? 2 : 1000
+          });
         });
 
+        // Crear DataTable
         tabla = $('#tabla').DataTable({
           data: data,
           columns: columnas,
@@ -167,7 +175,7 @@
           }
         });
 
-        // Custom filter using original row data
+        // Filtro personalizado
         $.fn.dataTable.ext.search.push(function(settings, rowData, dataIndex) {
           const marcaSel = $("#marcaAuto").val()?.trim().toLowerCase();
           const tipoSel = $("#tipoRepuesto").val()?.trim().toLowerCase();
@@ -182,7 +190,7 @@
           return marcaCoincide && tipoCoincide;
         });
 
-        // Apply filters on dropdown change
+        // Eventos de filtro
         $("#marcaAuto, #tipoRepuesto").on("change", function() {
           tabla.draw();
         });
