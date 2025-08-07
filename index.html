@@ -166,7 +166,30 @@
           responsive: {
             details: {
               type: 'column',
-              target: 0
+              target: 0,
+              renderer: function ( api, rowIdx, columns ) {
+                var data = $.map( columns, function ( col, i ) {
+                  if (col.columnIndex === 0) return ''; // No mostrar columna control en detalle
+
+                  // Mostrar descripción completa sin truncar
+                  if (col.title === "DESCRIPCION") {
+                    return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
+                           '<td><strong>'+col.title+':</strong></td>'+
+                           '<td>' + col.data + '</td>'+
+                           '</tr>';
+                  }
+
+                  // Mostrar otras columnas normalmente
+                  return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
+                         '<td><strong>'+col.title+':</strong></td> '+
+                         '<td>'+col.data+'</td>'+
+                         '</tr>';
+                }).join('');
+
+                return data ?
+                  $('<table/>').append( data ) :
+                  false;
+              }
             }
           },
           order: [[1, 'asc']],
