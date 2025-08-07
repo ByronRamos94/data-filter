@@ -202,32 +202,7 @@
         tabla = $('#tabla').DataTable({
           data: data,
           columns: columnas,
-          responsive: {
-            details: {
-              type: 'column',
-              target: 0,
-              renderer: function (api, rowIdx, columns) {
-                const data = $.map(columns, function(col) {
-                  if (col.columnIndex === 0) return '';
-
-                  let value = col.data;
-                  if (col.title === "DESCRIPCION") {
-                    const tempDiv = document.createElement("div");
-                    tempDiv.innerHTML = value;
-                    value = tempDiv.textContent || tempDiv.innerText || "";
-                  }
-
-                  return `
-                    <tr data-dt-row="${col.rowIndex}" data-dt-column="${col.columnIndex}">
-                      <td><strong>${col.title}:</strong></td>
-                      <td>${value}</td>
-                    </tr>`;
-                }).join('');
-
-                return data ? $('<table/>').append(data) : false;
-              }
-            }
-          },
+          responsive: true, // usamos solo el modo responsive sin detalles automáticos
           order: [[1, 'asc']],
           pageLength: 10,
           language: {
@@ -235,7 +210,7 @@
           }
         });
 
-        // Cambiar ícono dinámicamente en expandir/cerrar
+        // Expansión/contracción manual con icono
         $('#tabla tbody').on('click', 'td.dt-control', function () {
           const tr = $(this).closest('tr');
           const row = tabla.row(tr);
@@ -243,15 +218,30 @@
 
           if (row.child.isShown()) {
             row.child.hide();
-            tr.removeClass('dt-hasChild');
             icon.text('➕');
           } else {
-            row.child.show();
-            tr.addClass('dt-hasChild');
+            // Construir contenido personalizado para el detalle
+            const rowData = row.data();
+            const detalle = Object.keys(rowData).map(k => {
+              let value = rowData[k];
+              if (k === "DESCRIPCION") {
+                const tempDiv = document.createElement("div");
+                tempDiv.innerHTML = value;
+                value = tempDiv.textContent || tempDiv.innerText || "";
+              }
+              return `
+                <tr>
+                  <td><strong>${k}:</strong></td>
+                  <td>${value}</td>
+                </tr>`;
+            }).join("");
+
+            row.child(`<table>${detalle}</table>`).show();
             icon.text('➖');
           }
         });
 
+        // Filtro por selects
         $.fn.dataTable.ext.search.push(function(settings, rowData, dataIndex) {
           const marcaSel = $("#marcaAuto").val()?.trim().toLowerCase();
           const tipoSel = $("#tipoRepuesto").val()?.trim().toLowerCase();
