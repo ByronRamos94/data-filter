@@ -104,23 +104,14 @@
       }
     }
 
-    /* 🔥 Oculta el ícono gris de DataTables */
-    table.dataTable.dtr-inline.collapsed > tbody > tr > td.control:before,
-    table.dataTable.dtr-inline.collapsed > tbody > tr > th.control:before {
+    /* ✅ Oculta el ícono automático gris/verde */
+    table.dataTable.dtr-inline.collapsed>tbody>tr>td.control:before,
+    table.dataTable.dtr-inline.collapsed>tbody>tr>th.control:before {
       display: none !important;
     }
 
-    /* 🎨 Estilo visual para el detalle expandido */
-    table.dataTable tbody tr.child {
-      background-color: rgba(247, 111, 62, 0.08);
-    }
-
-    table.dataTable tbody tr.child td {
-      padding: 0;
-    }
-
-    table.dataTable tbody tr.child table {
-      width: 100%;
+    /* ✅ Estilo bonito del detalle expandido */
+    .child-wrapper {
       background-color: #fff8f5;
       border-radius: 8px;
       padding: 15px;
@@ -128,12 +119,12 @@
       border: 1px solid #f76f3e33;
     }
 
-    table.dataTable tbody tr.child table td {
+    .child-wrapper table td {
       padding: 6px 10px;
       font-size: 0.9rem;
     }
 
-    table.dataTable tbody tr.child table td strong {
+    .child-wrapper table td strong {
       color: #f76f3e;
     }
   </style>
@@ -182,7 +173,7 @@
         const columnas = [
           {
             data: null,
-            className: 'dt-control', // solo nuestra clase, no 'control'
+            className: 'dt-control', // solo esta clase (NO usar 'control')
             orderable: false,
             defaultContent: '<span class="expand-icon" style="font-size: 1.2rem; color: #f76f3e; font-weight: bold;">➕</span>',
             responsivePriority: 0
@@ -212,7 +203,7 @@
           data: data,
           columns: columnas,
           responsive: {
-            details: false // importante: desactivar detalles automáticos
+            details: false // desactiva el ícono gris/verde automático
           },
           order: [[1, 'asc']],
           pageLength: 10,
@@ -221,7 +212,7 @@
           }
         });
 
-        // Comportamiento de expandir/contraer
+        // Comportamiento de expandir/contraer con ícono personalizado
         $('#tabla tbody').on('click', 'td.dt-control', function () {
           const tr = $(this).closest('tr');
           const row = tabla.row(tr);
@@ -247,7 +238,7 @@
           }
         });
 
-        // Filtro por selects
+        // Filtros por selects
         $.fn.dataTable.ext.search.push(function(settings, rowData, dataIndex) {
           const marcaSel = $("#marcaAuto").val()?.trim().toLowerCase();
           const tipoSel = $("#tipoRepuesto").val()?.trim().toLowerCase();
