@@ -89,11 +89,11 @@
       }
     }
 
-    /* 🎯 Paginador amigable, pill style, centrado */
+    /* 🎯 Paginador visual, sin botones fantasmas */
     .dataTables_wrapper .dataTables_paginate {
       display: flex;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
       margin-top: 20px;
       flex-wrap: wrap;
     }
@@ -102,14 +102,15 @@
       background-color: #f76f3e !important;
       color: white !important;
       border: none !important;
-      border-radius: 25px !important;
-      padding: 6px 14px !important;
+      border-radius: 30px !important;
+      padding: 10px 16px !important;
       font-size: 0.95rem;
       font-weight: 500;
       cursor: pointer;
       transition: background-color 0.2s ease;
       box-shadow: 0 2px 4px rgba(0,0,0,0.08);
       text-decoration: none !important;
+      min-width: 44px;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button.current {
@@ -120,6 +121,20 @@
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.current) {
       background-color: #e95f27 !important;
       color: #fff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:focus,
+    .dataTables_wrapper .dataTables_paginate .paginate_button:active {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    @media (max-width: 600px) {
+      .dataTables_wrapper .dataTables_paginate .paginate_button {
+        font-size: 1rem;
+        padding: 12px 20px !important;
+        min-width: 50px;
+      }
     }
   </style>
 </head>
