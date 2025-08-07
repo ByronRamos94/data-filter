@@ -127,6 +127,12 @@
     table.dataTable tbody tr.child table td strong {
       color: #f76f3e;
     }
+
+    /* ✅ Oculta el ícono automático de DataTables sin afectar funcionalidad */
+    table.dataTable.dtr-inline.collapsed>tbody>tr>td.control:before,
+    table.dataTable.dtr-inline.collapsed>tbody>tr>th.control:before {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -202,7 +208,9 @@
         tabla = $('#tabla').DataTable({
           data: data,
           columns: columnas,
-          responsive: true, // usamos solo el modo responsive sin detalles automáticos
+          responsive: {
+            details: false // importante: mantenemos responsivo pero sin ícono automático
+          },
           order: [[1, 'asc']],
           pageLength: 10,
           language: {
@@ -210,7 +218,7 @@
           }
         });
 
-        // Expansión/contracción manual con icono
+        // Comportamiento de expansión/cierre manual
         $('#tabla tbody').on('click', 'td.dt-control', function () {
           const tr = $(this).closest('tr');
           const row = tabla.row(tr);
@@ -220,7 +228,6 @@
             row.child.hide();
             icon.text('➕');
           } else {
-            // Construir contenido personalizado para el detalle
             const rowData = row.data();
             const detalle = Object.keys(rowData).map(k => {
               let value = rowData[k];
@@ -229,11 +236,7 @@
                 tempDiv.innerHTML = value;
                 value = tempDiv.textContent || tempDiv.innerText || "";
               }
-              return `
-                <tr>
-                  <td><strong>${k}:</strong></td>
-                  <td>${value}</td>
-                </tr>`;
+              return `<tr><td><strong>${k}:</strong></td><td>${value}</td></tr>`;
             }).join("");
 
             row.child(`<table>${detalle}</table>`).show();
@@ -241,7 +244,7 @@
           }
         });
 
-        // Filtro por selects
+        // Filtros
         $.fn.dataTable.ext.search.push(function(settings, rowData, dataIndex) {
           const marcaSel = $("#marcaAuto").val()?.trim().toLowerCase();
           const tipoSel = $("#tipoRepuesto").val()?.trim().toLowerCase();
