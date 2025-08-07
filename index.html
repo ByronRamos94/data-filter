@@ -72,8 +72,19 @@
       display: none;
     }
 
-    @media (max-width: 600px) {
-      /* Solo reducimos el tamaño de fuente, el resto queda controlado por el render */
+    /* Clase para la descripción con truncado solo en móvil */
+    .descripcion-truncada {
+      display: inline-block;
+      vertical-align: bottom;
+    }
+    @media (max-width: 768px) {
+      .descripcion-truncada {
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      /* Reducir un poco fuente en móvil (opcional) */
       table.dataTable td:nth-child(2),
       table.dataTable th:nth-child(2) {
         font-size: 0.75rem;
@@ -134,17 +145,10 @@
           let col = { title: k, data: k };
           if (k === "DESCRIPCION") {
             col.responsivePriority = 1;
-            // Render para truncar con ellipsis y tooltip
             col.render = function(data) {
               if (!data) return "";
-              return `<span title="${data.replace(/"/g, '&quot;')}" style="
-                display: inline-block;
-                max-width: 150px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                vertical-align: bottom;
-              ">${data}</span>`;
+              const safeData = data.replace(/"/g, '&quot;');
+              return `<span title="${safeData}" class="descripcion-truncada">${data}</span>`;
             };
           } else if (k === "TIPO REPUESTO") {
             col.responsivePriority = 2;
