@@ -104,34 +104,37 @@
       }
     }
 
+    /* 🔥 Oculta el ícono gris de DataTables */
+    table.dataTable.dtr-inline.collapsed > tbody > tr > td.control:before,
+    table.dataTable.dtr-inline.collapsed > tbody > tr > th.control:before {
+      display: none !important;
+    }
+
+    /* 🎨 Estilo visual para el detalle expandido */
     table.dataTable tbody tr.child {
       background-color: rgba(247, 111, 62, 0.08);
     }
 
     table.dataTable tbody tr.child td {
-      padding: 15px;
+      padding: 0;
     }
 
     table.dataTable tbody tr.child table {
       width: 100%;
       background-color: #fff8f5;
       border-radius: 8px;
-      padding: 10px;
+      padding: 15px;
+      margin: 10px;
+      border: 1px solid #f76f3e33;
     }
 
     table.dataTable tbody tr.child table td {
-      padding: 4px 8px;
+      padding: 6px 10px;
       font-size: 0.9rem;
     }
 
     table.dataTable tbody tr.child table td strong {
       color: #f76f3e;
-    }
-
-    /* ✅ Oculta el ícono automático de DataTables sin afectar funcionalidad */
-    table.dataTable.dtr-inline.collapsed>tbody>tr>td.control:before,
-    table.dataTable.dtr-inline.collapsed>tbody>tr>th.control:before {
-      display: none !important;
     }
   </style>
 </head>
@@ -179,7 +182,7 @@
         const columnas = [
           {
             data: null,
-            className: 'dt-control',
+            className: 'dt-control', // solo nuestra clase, no 'control'
             orderable: false,
             defaultContent: '<span class="expand-icon" style="font-size: 1.2rem; color: #f76f3e; font-weight: bold;">➕</span>',
             responsivePriority: 0
@@ -209,7 +212,7 @@
           data: data,
           columns: columnas,
           responsive: {
-            details: false // importante: mantenemos responsivo pero sin ícono automático
+            details: false // importante: desactivar detalles automáticos
           },
           order: [[1, 'asc']],
           pageLength: 10,
@@ -218,7 +221,7 @@
           }
         });
 
-        // Comportamiento de expansión/cierre manual
+        // Comportamiento de expandir/contraer
         $('#tabla tbody').on('click', 'td.dt-control', function () {
           const tr = $(this).closest('tr');
           const row = tabla.row(tr);
@@ -239,12 +242,12 @@
               return `<tr><td><strong>${k}:</strong></td><td>${value}</td></tr>`;
             }).join("");
 
-            row.child(`<table>${detalle}</table>`).show();
+            row.child(`<div class="child-wrapper"><table>${detalle}</table></div>`).show();
             icon.text('➖');
           }
         });
 
-        // Filtros
+        // Filtro por selects
         $.fn.dataTable.ext.search.push(function(settings, rowData, dataIndex) {
           const marcaSel = $("#marcaAuto").val()?.trim().toLowerCase();
           const tipoSel = $("#tipoRepuesto").val()?.trim().toLowerCase();
