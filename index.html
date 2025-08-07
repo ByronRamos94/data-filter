@@ -57,25 +57,32 @@
       background-color: rgba(247, 111, 62, 0.1);
     }
 
-    /* 🎨 Botones del paginador en naranja */
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-      background: #f76f3e !important;
-      color: white !important;
-      border-radius: 5px;
-      padding: 4px 8px;
-      margin: 0 2px;
-      border: none;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-      background: #000 !important;
-      color: white !important;
-    }
-
-    /* 🎯 Centrar el paginador */
+    /* 🎨 Paginador naranja, centrado, sin fondo blanco */
     .dataTables_wrapper .dataTables_paginate {
       text-align: center;
       margin-top: 15px;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      background-color: #f76f3e !important;
+      color: #fff !important;
+      border: none !important;
+      border-radius: 5px !important;
+      padding: 4px 10px !important;
+      margin: 0 3px;
+      text-decoration: none !important;
+      box-shadow: none !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+      background-color: #000 !important;
+      color: #fff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background-color: #e85e28 !important;
+      color: #fff !important;
+      cursor: pointer;
     }
 
     .table-responsive {
@@ -91,7 +98,6 @@
       display: none;
     }
 
-    /* Clase para la descripción truncada solo en móvil */
     .descripcion-truncada {
       display: inline-block;
       vertical-align: bottom;
