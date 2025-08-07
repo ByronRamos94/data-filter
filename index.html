@@ -8,7 +8,7 @@
   <!-- DataTables + Bootstrap + Responsive -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
   <style>
     body {
@@ -17,12 +17,14 @@
       background: #f8f9fa;
       color: #000;
     }
+
     h1 {
       text-align: center;
       margin-bottom: 20px;
       font-size: 1.8rem;
       color: #000;
     }
+
     .filtros {
       margin-bottom: 20px;
       display: flex;
@@ -30,6 +32,7 @@
       gap: 10px;
       justify-content: center;
     }
+
     select {
       padding: 8px;
       border-radius: 5px;
@@ -38,18 +41,22 @@
       background: #fff;
       color: #000;
     }
+
     select:focus {
       outline: none;
       border-color: #000;
       box-shadow: 0 0 5px rgba(247, 111, 62, 0.8);
     }
+
     table.dataTable thead th {
       background-color: #f76f3e;
       color: white;
     }
+
     table.dataTable tbody tr:hover {
       background-color: rgba(247, 111, 62, 0.1);
     }
+
     .dataTables_wrapper .dataTables_paginate .paginate_button {
       background: #000 !important;
       color: white !important;
@@ -57,26 +64,31 @@
       padding: 4px 8px;
       margin: 0 2px;
     }
+
     .dataTables_wrapper .dataTables_paginate .paginate_button.current {
       background: #f76f3e !important;
       color: white !important;
     }
+
     .table-responsive {
       overflow-x: auto;
     }
+
     td.control {
       cursor: pointer;
       user-select: none;
     }
+
     .dataTables_filter {
       display: none;
     }
 
-    /* Clase para la descripción truncada solo en móvil */
+    /* Truncado en móvil */
     .descripcion-truncada {
       display: inline-block;
       vertical-align: bottom;
     }
+
     @media (max-width: 768px) {
       .descripcion-truncada {
         max-width: 150px;
@@ -84,10 +96,50 @@
         overflow: hidden;
         text-overflow: ellipsis;
       }
+
       table.dataTable td:nth-child(2),
       table.dataTable th:nth-child(2) {
         font-size: 0.75rem;
       }
+    }
+
+    /* Ícono de expandir personalizado */
+    td.control::before {
+      content: "➕";
+      color: #f76f3e;
+      font-weight: bold;
+      font-size: 1.2rem;
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    tr.dt-hasChild td.control::before {
+      content: "➖";
+    }
+
+    /* Estilo visual del detalle expandido */
+    table.dataTable tbody tr.child {
+      background-color: rgba(247, 111, 62, 0.08);
+    }
+
+    table.dataTable tbody tr.child td {
+      padding: 15px;
+    }
+
+    table.dataTable tbody tr.child table {
+      width: 100%;
+      background-color: #fff8f5;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    table.dataTable tbody tr.child table td {
+      padding: 4px 8px;
+      font-size: 0.9rem;
+    }
+
+    table.dataTable tbody tr.child table td strong {
+      color: #f76f3e;
     }
   </style>
 </head>
@@ -138,6 +190,7 @@
             orderable: false,
             data: null,
             defaultContent: '',
+            responsivePriority: 0
           }
         ];
 
@@ -168,12 +221,10 @@
               type: 'column',
               target: 0,
               renderer: function (api, rowIdx, columns) {
-                const data = $.map(columns, function(col, i) {
+                const data = $.map(columns, function(col) {
                   if (col.columnIndex === 0) return '';
 
                   let value = col.data;
-
-                  // Quitar HTML si es la descripción
                   if (col.title === "DESCRIPCION") {
                     const tempDiv = document.createElement("div");
                     tempDiv.innerHTML = value;
