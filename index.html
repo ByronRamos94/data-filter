@@ -104,13 +104,13 @@
       }
     }
 
-    /* ✅ Oculta el ícono automático gris/verde */
-    table.dataTable.dtr-inline.collapsed>tbody>tr>td.control:before,
-    table.dataTable.dtr-inline.collapsed>tbody>tr>th.control:before {
+    /* ✅ OCULTA ÍCONO AUTOMÁTICO DE DATATABLES */
+    table.dataTable.dtr-inline.collapsed>tbody>tr>td:before,
+    table.dataTable.dtr-inline.collapsed>tbody>tr>th:before {
       display: none !important;
     }
 
-    /* ✅ Estilo bonito del detalle expandido */
+    /* ✅ ESTILO BONITO PARA DETALLE EXPANDIDO */
     .child-wrapper {
       background-color: #fff8f5;
       border-radius: 8px;
@@ -173,7 +173,7 @@
         const columnas = [
           {
             data: null,
-            className: 'dt-control', // solo esta clase (NO usar 'control')
+            className: 'dt-control', // SOLO esta clase, sin 'control'
             orderable: false,
             defaultContent: '<span class="expand-icon" style="font-size: 1.2rem; color: #f76f3e; font-weight: bold;">➕</span>',
             responsivePriority: 0
@@ -203,7 +203,7 @@
           data: data,
           columns: columnas,
           responsive: {
-            details: false // desactiva el ícono gris/verde automático
+            details: false // desactiva el ícono automático
           },
           order: [[1, 'asc']],
           pageLength: 10,
@@ -212,7 +212,7 @@
           }
         });
 
-        // Comportamiento de expandir/contraer con ícono personalizado
+        // ➕/➖ Expandir y contraer
         $('#tabla tbody').on('click', 'td.dt-control', function () {
           const tr = $(this).closest('tr');
           const row = tabla.row(tr);
@@ -238,7 +238,7 @@
           }
         });
 
-        // Filtros por selects
+        // Filtros
         $.fn.dataTable.ext.search.push(function(settings, rowData, dataIndex) {
           const marcaSel = $("#marcaAuto").val()?.trim().toLowerCase();
           const tipoSel = $("#tipoRepuesto").val()?.trim().toLowerCase();
